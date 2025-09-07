@@ -38,10 +38,20 @@ export const getQuestionById = async (id) => {
   }
 };
 
-// Update a question by ID
 export const updateQuestion = async (id, updatedData) => {
   try {
-    const response = await axios.put(`${BASE_URL}/question/${id}`, updatedData);
+    const token = window.localStorage.getItem("myapp");
+
+    const response = await axios.put(
+      `${BASE_URL}/question/${id}`,
+      updatedData,        // data goes second
+      {
+        headers: {
+          authorization: token,  // raw token
+        },
+      }
+    );
+
     console.log("Updated question:", response.data);
     return response.data;
   } catch (error) {
@@ -49,6 +59,8 @@ export const updateQuestion = async (id, updatedData) => {
     throw error;
   }
 };
+
+
 
 // Delete a question by ID
 export const deleteQuestionApi = async (id) => {

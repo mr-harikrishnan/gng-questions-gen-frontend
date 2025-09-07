@@ -1,4 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik'
 import CodeEditor from '../../Components/Code-Editor/CodeEditor'
 import DragAndDrop from '../../Components/Drag-And-Drop/DragAndDrop'
@@ -22,6 +23,8 @@ function CreateForm() {
   const [subjectsArray, setSubjectsArray] = useState([]);
   const [topics, setTopics] = useState([]);
   const [showEditor, setShowEditor] = useState(false)
+
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -127,6 +130,8 @@ function CreateForm() {
         const response = await createQuestion(values)
         console.log(response)
         alert("submit successfull")
+        navigate('/')
+        
       } catch (error) {
 
       }
