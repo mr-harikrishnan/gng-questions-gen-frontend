@@ -12,6 +12,7 @@ import NTQ from '../../assets/NTQ.png';
 
 import { getAllSubjectsAndTopics } from '../../hook/api/subjectAndTopic';
 import { getQuestionById, updateQuestion } from '../../hook/api/questionsApi';
+import Header from '../../Components/Header/Header';
 
 const Mcq = React.lazy(() => import('../../Components/MCQ/Mcq'));
 const Msq = React.lazy(() => import('../../Components/MSQ/Msq'));
@@ -167,17 +168,7 @@ function EditForm() {
 
     return (
         <div className='min-h-full w-full flex flex-col items-center'>
-            <div className="w-full flex items-center bg-[#71C9CE]">
-                <div className='w-full ml-4'>
-                    <Link to={"/"}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="size-6 cursor-pointer">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                        </svg>
-                    </Link>
-                </div>
-                <h1 className=' p-2 w-full font-medium text-3xl text-white text-center font-sans'>Questions</h1>
-                <div className='w-full'></div>
-            </div>
+            <Header title='Edit Form'></Header>
 
             <form className='w-full max-w-4xl p-4 md:p-8 mr-12' onSubmit={formik.handleSubmit}>
                 <div className='p-4'>
@@ -197,7 +188,7 @@ function EditForm() {
                         )}
                     </div>
 
-                    <DragAndDrop formik={formik} questionsType={formik.values.questionsType}/>
+                    <DragAndDrop formik={formik} questionsType={formik.values.questionsType} />
 
                     <button
                         type="button"
@@ -253,11 +244,11 @@ function EditForm() {
 
                     <div>
                         <Suspense fallback={<div>Loading...</div>}>
-                            {formik.values.questionsType === "mcq" && <Mcq formik={formik} questionsType={formik.values.questionsType}/>}
-                            {formik.values.questionsType === "msq" && <Msq formik={formik} questionsType={formik.values.questionsType}/>}
-                            {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionsType={formik.values.questionsType}/>}
-                            {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionsType={formik.values.questionsType}/>}
-                            {formik.values.questionsType === "ntq" && <Ntq formik={formik} questionsType={formik.values.questionsType}/>}
+                            {formik.values.questionsType === "mcq" && <Mcq formik={formik} questionsType={formik.values.questionsType} />}
+                            {formik.values.questionsType === "msq" && <Msq formik={formik} questionsType={formik.values.questionsType} />}
+                            {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionsType={formik.values.questionsType} />}
+                            {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionsType={formik.values.questionsType} />}
+                            {formik.values.questionsType === "ntq" && <Ntq formik={formik} questionsType={formik.values.questionsType} />}
                         </Suspense>
                     </div>
 
