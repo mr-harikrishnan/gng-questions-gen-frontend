@@ -1,7 +1,7 @@
 import DragAndDrop from "../Drag-And-Drop/DragAndDrop"
 
 
-function McqImageOptionsCard({ formik, index, correctAnswer, setCorrectAnswer }) {
+function McqImageOptionsCard({ formik, index, correctAnswer, setCorrectAnswer,questionsType }) {
 
 
 
@@ -47,6 +47,7 @@ function McqImageOptionsCard({ formik, index, correctAnswer, setCorrectAnswer })
 
                     <div className="">
                         <DragAndDrop formik={formik}
+                        questionsType={questionsType}
                             fieldName="options"
                             index={index}
                             size="small"

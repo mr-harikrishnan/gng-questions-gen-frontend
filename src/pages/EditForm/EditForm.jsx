@@ -93,9 +93,6 @@ function EditForm() {
                     getQuestionById(id)
                 ]);
 
-                console.log("Fetched question data:", questionData); // Debug log
-                console.log("Fetched subjects data:", subjectsData); // Debug log
-
                 setSubjectsArray(subjectsData);
 
                 // Set topics based on the question's subject
@@ -103,9 +100,6 @@ function EditForm() {
                     const selectedSub = subjectsData.find(s => s.subject === questionData.subject);
                     if (selectedSub) {
                         setTopics(selectedSub.topics);
-                    } else {
-                        // Fallback to first subject's topics
-                        setTopics(subjectsData[0].topics);
                     }
                 }
 
@@ -113,14 +107,15 @@ function EditForm() {
                 if (questionData.code && questionData.code !== "Write your Code...") {
                     setShowEditor(true);
                 }
+                console.log(questionData)
 
                 // Set formik values - using setValues for bulk update
                 formik.setValues({
                     question: questionData.question || "",
                     image: questionData.image || null,
                     code: questionData.code || "Write your Code...",
-                    subject: questionData.subject || "",
-                    topic: questionData.topic || "",
+                    subject: questionData.subject || subjectsData[0]?.subject || "",
+                    topic: questionData.topic || subjectsData[0]?.topics[0] || "",
                     options: Array.isArray(questionData.options) ? questionData.options : [],
                     questionsType: questionData.questionsType || "mcq",
                     explanation: questionData.explanation || "",
@@ -137,7 +132,7 @@ function EditForm() {
         };
 
         fetchSubjectsAndQuestion();
-    }, [id]); // Only depend on id, not formik
+    }, [id]);
 
     const setTopicSelectedSubject = (value) => {
         const selectedSubject = subjectsArray.find(sub => sub.subject === value);
@@ -147,14 +142,21 @@ function EditForm() {
         }
     };
 
-    const addNewTag = (tagString) => {
-        if (tagString.includes(",")) {
-            const newTags = tagString.split(",").map(tag => tag.trim()).filter(tag => tag !== "");
-            formik.setFieldValue("tags", newTags);
+    const addNewTag = (e) => {
+        const inputValue = e.target.value;
+        if (inputValue.endsWith(',')) {
+            const newTags = inputValue.slice(0, -1).split(',').map(tag => tag.trim()).filter(tag => tag !== "");
+            if (newTags.length > 0) {
+                formik.setFieldValue("tags", [...new Set([...formik.values.tags, ...newTags])]);
+                e.target.value = "";
+            }
         }
     };
 
-    // Show loading state while fetching data
+    const removeTag = (tagToRemove) => {
+        formik.setFieldValue("tags", formik.values.tags.filter(tag => tag !== tagToRemove));
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-full w-full flex items-center justify-center">
@@ -165,7 +167,6 @@ function EditForm() {
 
     return (
         <div className='min-h-full w-full flex flex-col items-center'>
-            {/* HEADLINE */}
             <div className="w-full flex items-center bg-[#71C9CE]">
                 <div className='w-full ml-4'>
                     <Link to={"/"}>
@@ -178,7 +179,6 @@ function EditForm() {
                 <div className='w-full'></div>
             </div>
 
-            {/* QUESTION FORM */}
             <form className='w-full max-w-4xl p-4 md:p-8 mr-12' onSubmit={formik.handleSubmit}>
                 <div className='p-4'>
                     <div className='flex flex-col my-2'>
@@ -197,10 +197,8 @@ function EditForm() {
                         )}
                     </div>
 
-                    {/* CHOOSE FILE */}
-                    <DragAndDrop formik={formik} />
+                    <DragAndDrop formik={formik} questionsType={formik.values.questionsType}/>
 
-                    {/* ADD CODE */}
                     <button
                         type="button"
                         onClick={() => setShowEditor(!showEditor)}
@@ -218,7 +216,6 @@ function EditForm() {
                         />
                     )}
 
-                    {/* CHOOSE SUBJECT AND TOPIC */}
                     <div className='flex flex-col md:flex-row gap-4'>
                         <div className='w-full'>
                             <label className='text-sm text-gray-500 my-2'>Subject</label>
@@ -254,18 +251,16 @@ function EditForm() {
                         </div>
                     </div>
 
-                    {/* QUESTION TYPE COMPONENTS */}
                     <div>
                         <Suspense fallback={<div>Loading...</div>}>
-                            {formik.values.questionsType === "mcq" && <Mcq formik={formik} />}
-                            {formik.values.questionsType === "msq" && <Msq formik={formik} />}
-                            {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} />}
-                            {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} />}
-                            {formik.values.questionsType === "ntq" && <Ntq formik={formik} />}
+                            {formik.values.questionsType === "mcq" && <Mcq formik={formik} questionsType={formik.values.questionsType}/>}
+                            {formik.values.questionsType === "msq" && <Msq formik={formik} questionsType={formik.values.questionsType}/>}
+                            {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionsType={formik.values.questionsType}/>}
+                            {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionsType={formik.values.questionsType}/>}
+                            {formik.values.questionsType === "ntq" && <Ntq formik={formik} questionsType={formik.values.questionsType}/>}
                         </Suspense>
                     </div>
 
-                    {/* EXPLANATION */}
                     <div className='flex flex-col my-2'>
                         <label className='text-sm text-gray-500 my-2'>Explanation</label>
                         <input
@@ -282,47 +277,41 @@ function EditForm() {
                         )}
                     </div>
 
-                    {/* TAGS */}
                     <div className='flex flex-col my-2'>
                         <label className='text-sm text-gray-500 my-2'>Tag</label>
                         <input
-                            name='tags'
-                            value={Array.isArray(formik.values.tags) ? formik.values.tags.join(', ') : ''}
-                            onChange={(e) => {
-                                // Update the input field value
-                                const inputValue = e.target.value;
+                            type="text"
+                            name="tags"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === ",") {
+                                    e.preventDefault();
+                                    const newTags = e.target.value
+                                        .split(",") // comma la split pannu
+                                        .map(tag => tag.trim()) // space remove
+                                        .filter(tag => tag.length > 0); // empty illa nu check
 
-                                // If user types comma, split and create array
-                                if (inputValue.includes(',')) {
-                                    const newTags = inputValue.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-                                    formik.setFieldValue('tags', newTags);
-                                } else {
-                                    // For single value without comma, create array with one item
-                                    formik.setFieldValue('tags', inputValue ? [inputValue] : []);
+                                    if (newTags.length > 0) {
+                                        const currentTags = Array.isArray(formik.values.tags) ? formik.values.tags : [];
+                                        formik.setFieldValue("tags", [...new Set([...currentTags, ...newTags])]);
+                                        e.target.value = "";
+                                    }
                                 }
                             }}
-                            onBlur={formik.handleBlur}
-                            type="text"
-                            placeholder='Add your tags (comma separated)'
-                            className='border-1 pl-2 h-9 placeholder-gray-400 rounded-lg border-gray-400 bg-[#ebf8f8] hover:bg-[#d3f0f3]'
+                            placeholder="Add your tags (press Enter or comma)"
+                            className="border-1 pl-2 h-9 placeholder-gray-400 rounded-lg border-gray-400 bg-[#ebf8f8] hover:bg-[#d3f0f3]"
                         />
+
                         {formik.touched.tags && formik.errors.tags && (
                             <span className="text-red-500 text-sm">{formik.errors.tags}</span>
                         )}
 
-                        {/* Display current tags */}
                         {Array.isArray(formik.values.tags) && formik.values.tags.length > 0 && (
-                            <div className="mt-2">
-                                <span className="text-sm text-gray-600">Current tags: </span>
+                            <div className="mt-2 flex flex-wrap gap-2">
                                 {formik.values.tags.map((tag, index) => (
                                     <span
                                         key={index}
-                                        className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm mr-2 mb-1 cursor-pointer hover:bg-blue-200"
-                                        onClick={() => {
-                                            // Remove tag when clicked
-                                            const newTags = formik.values.tags.filter((_, i) => i !== index);
-                                            formik.setFieldValue('tags', newTags);
-                                        }}
+                                        className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm cursor-pointer hover:bg-blue-200"
+                                        onClick={() => removeTag(tag)}
                                         title="Click to remove"
                                     >
                                         {tag} ×
@@ -332,7 +321,6 @@ function EditForm() {
                         )}
                     </div>
 
-                    {/* SUBMIT BUTTON */}
                     <button
                         type='submit'
                         className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -342,7 +330,6 @@ function EditForm() {
                 </div>
             </form>
 
-            {/* QUESTION TYPE NAVIGATION */}
             <div className='fixed z-60 top-1/2 -translate-y-1/2 right-1 p-2 rounded-lg flex flex-col gap-4'>
                 <img
                     onClick={() => {

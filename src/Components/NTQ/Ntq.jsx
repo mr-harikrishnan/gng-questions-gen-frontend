@@ -3,14 +3,13 @@ import React, { useEffect } from 'react';
 function Ntq({ formik }) {
 
   useEffect(() => {
-    // Destructure and remove "options" from Formik values
     const { options, ...rest } = formik.values;
 
-    // Set new values with min and max fields
     formik.setValues({
       ...rest,
-      min: "",
-      max: ""
+      // keep existing min & max
+      min: formik.values.min ?? "",
+      max: formik.values.max ?? ""
     });
   }, []);
 

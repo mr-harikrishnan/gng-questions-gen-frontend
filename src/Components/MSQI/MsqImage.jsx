@@ -3,7 +3,7 @@ import MsqImageOptionsCard from './MsqImageOptionsCard';
 
 
 
-function MsqImage({ formik }) {
+function MsqImage({ formik,questionsType }) {
 
     const [correctAnswer, setCorrectAnswer] = useState([0])
 
@@ -58,6 +58,7 @@ function MsqImage({ formik }) {
             <div className="grid lg:grid-cols-2 gap-6">
                 {formik.values.options.map((opt, index) => (
                     <MsqImageOptionsCard
+                    questionsType={questionsType}
                         key={index}
                         formik={formik}
                         index={index}

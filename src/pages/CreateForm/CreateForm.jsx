@@ -126,6 +126,7 @@ function CreateForm() {
       try {
         const response = await createQuestion(values)
         console.log(response)
+        alert("submit successfull")
       } catch (error) {
 
       }
@@ -184,7 +185,7 @@ function CreateForm() {
           </div>
 
           {/* CHOOSE FILE */}
-          <DragAndDrop formik={formik} />
+          <DragAndDrop formik={formik} questionsType={formik.values.questionsType}/>
 
           {/* ADD CODE */}
           <button
@@ -249,8 +250,8 @@ function CreateForm() {
             <Suspense fallback={<div>Loading...</div>}>
               {formik.values.questionsType === "mcq" && <Mcq formik={formik} />}
               {formik.values.questionsType === "msq" && <Msq formik={formik} />}
-              {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} />}
-              {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} />}
+              {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionsType={formik.values.questionsType}/>}
+              {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionsType={formik.values.questionsType}/>}
               {formik.values.questionsType === "ntq" && <Ntq formik={formik} />}
             </Suspense>
           </div>
