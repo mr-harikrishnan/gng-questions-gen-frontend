@@ -1,3 +1,3 @@
 export let config={
-    api:"http://localhost:3000"
+    api:"https://gng-questions-gen-backend.onrender.com"
 }

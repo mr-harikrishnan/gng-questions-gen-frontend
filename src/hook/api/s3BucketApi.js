@@ -13,7 +13,7 @@ export const uploadFileToS3 = async (file, fileUuid, questionId) => {
     const fileName = fileUuid
 
 
-    const uploadId = await axios.post("http://localhost:3000/start-multi-part-upload", {
+    const uploadId = await axios.post("https://gng-questions-gen-backend.onrender.com/start-multi-part-upload", {
         fileKey: fileName,
         questionId: questionId
     })
@@ -27,7 +27,7 @@ export const uploadFileToS3 = async (file, fileUuid, questionId) => {
         var chunk = file.slice(start, start + chunkSize)
         console.log(chunk)
 
-        const signedUrl = await axios.post("http://localhost:3000/get-pre-signed-url", {
+        const signedUrl = await axios.post("https://gng-questions-gen-backend.onrender.com/get-pre-signed-url", {
             fileId: uploadId.data.fileId,
             fileKey: fileName,
             partNumber,
@@ -44,7 +44,7 @@ export const uploadFileToS3 = async (file, fileUuid, questionId) => {
         partNumber++
     }
 
-    const completeResponse = await axios.post("http://localhost:3000/complete-multi-part-upload", {
+    const completeResponse = await axios.post("https://gng-questions-gen-backend.onrender.com/complete-multi-part-upload", {
         parts,
         fileKey: fileName,
         fileId: uploadId.data.fileId,

@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import QuestionsList from './pages/QuestionListPage/QuestionList'
-import CreateForm from './pages/CreateForm/createform'
+import CreateForm from './pages/CreateForm/CreateForm'
 import EditForm from './pages/EditForm/editform'
 import Login from './pages/Auth/Login'
 import Register from './pages/Auth/Register'
