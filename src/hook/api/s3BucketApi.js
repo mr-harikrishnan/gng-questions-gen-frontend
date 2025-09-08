@@ -1,9 +1,9 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-export const uploadFileToS3 = async (file, fileUuid, questionsType) => {
+export const uploadFileToS3 = async (file, fileUuid, questionId) => {
     console.log("uploadFileToS3 :" + fileUuid)
-    console.log(questionsType)
+    console.log(questionId)
     console.log("File to upload:", file)
     var chunkSize = 1024 * 1024 * 5
     var fileSize = file.size;
@@ -15,7 +15,7 @@ export const uploadFileToS3 = async (file, fileUuid, questionsType) => {
 
     const uploadId = await axios.post("http://localhost:3000/start-multi-part-upload", {
         fileKey: fileName,
-        questionsType: questionsType
+        questionId: questionId
     })
 
     console.log(uploadId.data)
@@ -31,7 +31,7 @@ export const uploadFileToS3 = async (file, fileUuid, questionsType) => {
             fileId: uploadId.data.fileId,
             fileKey: fileName,
             partNumber,
-            questionsType: questionsType
+            questionId: questionId
         })
 
         //uploadChunk
@@ -39,7 +39,7 @@ export const uploadFileToS3 = async (file, fileUuid, questionsType) => {
         parts.push({
             ETag: uploadData.headers.etag.replaceAll('"', ""),
             PartNumber: partNumber,
-            questionsType: questionsType
+            questionId: questionId
         })
         partNumber++
     }
@@ -48,12 +48,12 @@ export const uploadFileToS3 = async (file, fileUuid, questionsType) => {
         parts,
         fileKey: fileName,
         fileId: uploadId.data.fileId,
-        questionsType: questionsType
+        questionId: questionId
     })
     console.log(parts)
 
     // Construct and return S3 URL
-    const s3Url = `https://d1rhvsdiboxrlj.cloudfront.net/Harikrishnan/questionsGen/${questionsType}/${fileName}`;
+    const s3Url = `https://d1rhvsdiboxrlj.cloudfront.net/Harikrishnan/questionsGen/${questionId}/${fileName}`;
 
     console.log("S3 URL:", s3Url);
     return s3Url;

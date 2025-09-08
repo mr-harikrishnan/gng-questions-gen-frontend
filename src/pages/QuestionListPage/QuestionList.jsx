@@ -2,9 +2,19 @@ import React, { useEffect, useState } from "react";
 import { getAllQuestions } from "../../hook/api/questionsApi";
 import QuestionCard from "../../Components/QuestionCard/QuestionCrad";
 import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 const QuestionsList = () => {
   const [questions, setQuestions] = useState([]);
+  const [newId, setNewId] = useState()
+
+
+  useEffect(() => {
+    // Generate UUID only once on mount
+    const id = uuidv4();
+    setNewId(id);
+    console.log("New question ID:", id);
+  }, []);
 
 
   const fetchData = async () => {
@@ -28,7 +38,7 @@ const QuestionsList = () => {
         <button
           className=""
         >
-          
+
         </button>
         <h1 className="text-3xl font-bold text-white font-sans">
           Questions
@@ -42,7 +52,7 @@ const QuestionsList = () => {
 
 
       <div className="w-full flex justify-end p-4 max-w-4xl">
-        <Link to={"/createform"}>
+        <Link to={`/createform/${newId}`}>
           <button className="border px-3 py-1 rounded text-white bg-[#71c9ce] hover:bg-[#4b969a]">
             + Create
           </button>

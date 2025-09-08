@@ -10,7 +10,7 @@ function DragAndDrop({
     index = null,
     size = "large",
     placeholder = "Drag & Drop or Click to Upload",
-    questionsType
+    questionId
 }) {
 
     
@@ -71,7 +71,7 @@ function DragAndDrop({
             }
             console.log(fileName)
 
-            const s3Url = await uploadFileToS3(file, fileName,questionsType);
+            const s3Url = await uploadFileToS3(file, fileName,questionId);
             console.log("New URL:", s3Url);
 
             console.log("Uploaded to S3:", s3Url);

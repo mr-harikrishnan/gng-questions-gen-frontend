@@ -1,8 +1,9 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik'
 import CodeEditor from '../../Components/Code-Editor/CodeEditor'
 import DragAndDrop from '../../Components/Drag-And-Drop/DragAndDrop'
+
 
 import MCQ from '../../assets/MCQ.png'
 import MSQ from '../../assets/MSQ.png'
@@ -25,7 +26,19 @@ function CreateForm() {
   const [topics, setTopics] = useState([]);
   const [showEditor, setShowEditor] = useState(false)
 
+
+
+  const params = useParams();
+  const questionId = params.id;
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!formik.values.questionId) {
+      formik.setFieldValue("questionId", questionId, false);
+      console.log("Generated Question ID:", questionId);
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -52,6 +65,7 @@ function CreateForm() {
 
   const formik = useFormik({
     initialValues: {
+      questionId: "",
       question: "",
       image: null,
       code: "Write your Code...",
@@ -162,9 +176,13 @@ function CreateForm() {
       <Header></Header>
 
 
+
+
       {/* QUESTION FORM */}
       <form className='w-full max-w-4xl p-4 md:p-8 mr-12' onSubmit={formik.handleSubmit}>
+
         <div className='p-4'>
+          <div className="w-full  flex items-center text-[12px] text-gray-400">Question Id:{formik.values.questionId}</div>
           <div className='flex flex-col my-2'>
             <label className='text-sm text-gray-500 my-2'>Question</label>
             <input
@@ -182,7 +200,7 @@ function CreateForm() {
           </div>
 
           {/* CHOOSE FILE */}
-          <DragAndDrop formik={formik} questionsType={formik.values.questionsType} />
+          <DragAndDrop formik={formik} questionId={formik.values.questionId} />
 
           {/* ADD CODE */}
           <button
@@ -247,8 +265,8 @@ function CreateForm() {
             <Suspense fallback={<div>Loading...</div>}>
               {formik.values.questionsType === "mcq" && <Mcq formik={formik} />}
               {formik.values.questionsType === "msq" && <Msq formik={formik} />}
-              {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionsType={formik.values.questionsType} />}
-              {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionsType={formik.values.questionsType} />}
+              {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionId={formik.values.questionId} />}
+              {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionId={formik.values.questionId} />}
               {formik.values.questionsType === "ntq" && <Ntq formik={formik} />}
             </Suspense>
           </div>

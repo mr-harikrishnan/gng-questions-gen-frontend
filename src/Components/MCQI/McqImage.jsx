@@ -3,7 +3,7 @@ import McqImageOptionsCard from './McqImageOptionsCard';
 
 
 
-function McqImage({ formik,questionsType }) {
+function McqImage({ formik,questionId }) {
 
     const [correctAnswer, setCorrectAnswer] = useState(0)
 
@@ -66,7 +66,7 @@ function McqImage({ formik,questionsType }) {
                         index={index}
                         correctAnswer={correctAnswer}
                         setCorrectAnswer={setCorrectAnswer}
-                        questionsType={questionsType}
+                        questionId={questionId}
                     />
                 ))}
             </div>

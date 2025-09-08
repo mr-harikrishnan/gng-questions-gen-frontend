@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { Link, useParams } from 'react-router-dom';
 import CodeEditor from '../../Components/Code-Editor/CodeEditor';
 import DragAndDrop from '../../Components/Drag-And-Drop/DragAndDrop';
+import { v4 as uuidv4 } from "uuid";
 
 import MCQ from '../../assets/MCQ.png';
 import MSQ from '../../assets/MSQ.png';
@@ -29,6 +30,7 @@ function EditForm() {
 
     const formik = useFormik({
         initialValues: {
+            questionId: "",
             question: "",
             image: null,
             code: "Write your Code...",
@@ -112,6 +114,7 @@ function EditForm() {
 
                 // Set formik values - using setValues for bulk update
                 formik.setValues({
+                    questionId: questionData.questionId || questionIdCreate() || "",
                     question: questionData.question || "",
                     image: questionData.image || null,
                     code: questionData.code || "Write your Code...",
@@ -134,6 +137,11 @@ function EditForm() {
 
         fetchSubjectsAndQuestion();
     }, [id]);
+
+    const questionIdCreate = () => {
+        const newId = uuidv4();
+        return newId
+    };
 
     const setTopicSelectedSubject = (value) => {
         const selectedSubject = subjectsArray.find(sub => sub.subject === value);
@@ -172,6 +180,7 @@ function EditForm() {
 
             <form className='w-full max-w-4xl p-4 md:p-8 mr-12' onSubmit={formik.handleSubmit}>
                 <div className='p-4'>
+                    <div className="w-full  flex items-center text-[12px] text-gray-400">Question Id:{formik.values.questionId}</div>
                     <div className='flex flex-col my-2'>
                         <label className='text-sm text-gray-500 my-2'>Question</label>
                         <input
@@ -188,7 +197,7 @@ function EditForm() {
                         )}
                     </div>
 
-                    <DragAndDrop formik={formik} questionsType={formik.values.questionsType} />
+                    <DragAndDrop formik={formik} questionId={formik.values.questionId} />
 
                     <button
                         type="button"
@@ -244,11 +253,11 @@ function EditForm() {
 
                     <div>
                         <Suspense fallback={<div>Loading...</div>}>
-                            {formik.values.questionsType === "mcq" && <Mcq formik={formik} questionsType={formik.values.questionsType} />}
-                            {formik.values.questionsType === "msq" && <Msq formik={formik} questionsType={formik.values.questionsType} />}
-                            {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionsType={formik.values.questionsType} />}
-                            {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionsType={formik.values.questionsType} />}
-                            {formik.values.questionsType === "ntq" && <Ntq formik={formik} questionsType={formik.values.questionsType} />}
+                            {formik.values.questionsType === "mcq" && <Mcq formik={formik} questionId={formik.values.questionId} />}
+                            {formik.values.questionsType === "msq" && <Msq formik={formik} questionId={formik.values.questionId} />}
+                            {formik.values.questionsType === "mcqImage" && <McqImage formik={formik} questionId={formik.values.questionId} />}
+                            {formik.values.questionsType === "msqImage" && <MsqImage formik={formik} questionId={formik.values.questionId} />}
+                            {formik.values.questionsType === "ntq" && <Ntq formik={formik} questionId={formik.values.questionId} />}
                         </Suspense>
                     </div>
 

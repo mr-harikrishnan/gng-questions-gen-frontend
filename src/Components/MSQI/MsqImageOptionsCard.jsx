@@ -1,7 +1,7 @@
 
 import DragAndDrop from '../Drag-And-Drop/DragAndDrop'
 
-function MsqImageOptionsCard({ formik, index, correctAnswer, setCorrectAnswer, questionsType }) {
+function MsqImageOptionsCard({ formik, index, correctAnswer, setCorrectAnswer, questionId }) {
 
 
 
@@ -54,7 +54,7 @@ function MsqImageOptionsCard({ formik, index, correctAnswer, setCorrectAnswer, q
 
                     <div className="">
                         <DragAndDrop formik={formik}
-                            questionsType={questionsType}
+                            questionId={questionId}
                             fieldName="options"
                             index={index}
                             size="small"

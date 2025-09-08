@@ -13,7 +13,7 @@ function App() {
         <Route path='/' element={<Login></Login>}></Route>
         <Route path='/register' element={<Register></Register>}></Route>
         <Route path='/questions' element={<QuestionsList></QuestionsList>}></Route>
-        <Route path='/createform' element={<CreateForm></CreateForm>}></Route>
+        <Route path='/createform/:id' element={<CreateForm></CreateForm>}></Route>
         <Route path='/editform/:id' element={<EditForm></EditForm>}></Route>
       </Routes>
     </BrowserRouter>
