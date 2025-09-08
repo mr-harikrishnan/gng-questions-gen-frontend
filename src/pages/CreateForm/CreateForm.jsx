@@ -145,7 +145,7 @@ function CreateForm() {
         const response = await createQuestion(values)
         console.log(response)
         alert("submit successfull")
-        navigate('/')
+        navigate('/questions')
 
       } catch (error) {
 
