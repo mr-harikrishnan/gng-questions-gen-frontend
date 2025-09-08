@@ -2,14 +2,14 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import { Link, useNavigate } from "react-router-dom";
 import { config } from '../../hook/config';
+import { useState } from 'react';
 
 function Login() {
     const navigate = useNavigate();
+    const [serverError, setServerError] = useState("");
 
-    // Custom validation function
     const validate = values => {
         const errors = {};
-
         if (!values.email) {
             errors.email = 'Email is required';
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
@@ -22,36 +22,40 @@ function Login() {
             errors.password = 'Password must be at least 6 characters';
         }
 
-
         return errors;
     };
 
     const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: ''
-        },
+        initialValues: { email: '', password: '' },
         validate,
         onSubmit: async (values) => {
+            setServerError(""); // reset error
             try {
-                let login_res=await axios.post(`${config.api}/login`, values)
-                console.log(login_res.data);
-                window.localStorage.setItem("myapp",login_res.data.token)
-                navigate("/questions")
-            } catch (error) {
-                console.log(error)
-                alert(error)
+                const res = await axios.post(`${config.api}/login`, values);
+                // Successful login
+                localStorage.setItem("myapp", res.data.token);
+                navigate("/questions");
+            } catch (err) {
+                if (err.response && err.response.data && err.response.data.message) {
+                    setServerError(err.response.data.message); // display backend error
+                } else {
+                    setServerError("Something went wrong. Please try again.");
+                }
             }
-
         },
     });
 
     return (
         <div className="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-
                 <form onSubmit={formik.handleSubmit} className="px-8 py-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Sign In</h2>
+
+                    {serverError && (
+                        <div className="bg-red-100 text-red-700 p-3 mb-5 rounded-lg text-sm text-center">
+                            {serverError}
+                        </div>
+                    )}
 
                     <div className="mb-5">
                         <label className="block text-gray-700 text-sm font-medium mb-2">Email</label>
@@ -64,9 +68,9 @@ function Login() {
                             onBlur={formik.handleBlur}
                             value={formik.values.email}
                         />
-                        {formik.touched.email && formik.errors.email ? (
+                        {formik.touched.email && formik.errors.email && (
                             <div className="text-red-500 text-xs mt-1">{formik.errors.email}</div>
-                        ) : null}
+                        )}
                     </div>
 
                     <div className="mb-5">
@@ -80,11 +84,10 @@ function Login() {
                             onBlur={formik.handleBlur}
                             value={formik.values.password}
                         />
-                        {formik.touched.password && formik.errors.password ? (
+                        {formik.touched.password && formik.errors.password && (
                             <div className="text-red-500 text-xs mt-1">{formik.errors.password}</div>
-                        ) : null}
+                        )}
                     </div>
-
 
                     <button
                         type="submit"
@@ -93,15 +96,12 @@ function Login() {
                         Login
                     </button>
 
-
-
                     <p className="text-center text-sm text-gray-600 mt-6">
-                        Don’t have an account yet??{" "}
+                        Don’t have an account yet?{" "}
                         <Link to="/register" className="text-blue-600 hover:underline font-medium">
                             Create an account
                         </Link>
                     </p>
-
                 </form>
             </div>
         </div>

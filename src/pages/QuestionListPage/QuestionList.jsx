@@ -3,6 +3,7 @@ import { getAllQuestions } from "../../hook/api/questionsApi";
 import QuestionCard from "../../Components/QuestionCard/QuestionCrad";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import Header from "../../Components/Header/Header";
 
 const QuestionsList = () => {
   const [questions, setQuestions] = useState([]);
@@ -34,21 +35,7 @@ const QuestionsList = () => {
 
   return (
     <div className="h-full pb-12 flex flex-col items-center">
-      <div className="w-full flex items-center justify-between bg-[#71C9CE] p-4 shadow-md">
-        <button
-          className=""
-        >
-
-        </button>
-        <h1 className="text-3xl font-bold text-white font-sans">
-          Questions
-        </h1>
-        <button
-          className="px-4 py-2 rounded-md bord bg-white hover:bg-[#4FB3B9] hover:text-white text-[#4FB3B9] font-medium transition-colors"
-        >
-          Logout
-        </button>
-      </div>
+      <Header title='Questions'></Header>
 
 
       <div className="w-full flex justify-end p-4 max-w-4xl">

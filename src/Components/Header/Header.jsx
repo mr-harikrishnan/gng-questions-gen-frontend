@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 
 
-function Header({ title = "Question Generator", onLogout }) {
+function Header({ title }) {
   return (
     <div className="w-full flex items-center justify-between bg-[#71C9CE] p-3 shadow-md">
       
@@ -31,7 +31,7 @@ function Header({ title = "Question Generator", onLogout }) {
       </h1>
 
       {/* Logout Button */}
-      <Button onClick={onLogout}>Logout</Button>
+      <Button>Logout</Button>
     </div>
   );
 }
